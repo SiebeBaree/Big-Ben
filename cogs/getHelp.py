@@ -17,8 +17,9 @@ class GetHelp(commands.Cog):
         embed.add_field(name="About the bot", value="This bot is made for fun to let you know when an hour has passed.\n"
                                                     "Every hour the bot will join every active voice call en play a bell sound.", inline=False)
         embed.add_field(name="Admin Commands", value="`sound <sound-file>`\nGive a `.mp3` file and use it as the sound every hour.\n\n"
-                                                     "`hide-channel <channel>`\nHide a channel so that the bot will never join that channel.", inline=False)
-        embed.add_field(name="General Commands", value=f"`help`\nGet the help message.", inline=False)
+                                                     "`prefix <prefix>`\nChange the prefix of the bot in your server.", inline=False)
+        embed.add_field(name="General Commands", value=f"`help`\nGet the help message.\n"
+                                                       f"To check the prefix use: <@!{self.client.user.id}> prefix", inline=False)
         embed.set_footer(text=footer)
         await ctx.send(embed=embed)
 
