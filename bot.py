@@ -24,7 +24,7 @@ async def change_status():
             await voice.disconnect()
 
     while client.is_ready():
-        status = discord.Activity(name="time go by.", type=discord.ActivityType.watching)
+        status = discord.Activity(name="time go by. | $help", type=discord.ActivityType.watching)
         await client.change_presence(activity=status)
         await asyncio.sleep(300)
 
