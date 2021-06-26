@@ -3,6 +3,7 @@ from discord.ext import commands
 from settings import host, user, passwd, database, embedcolor, footer
 import mysql.connector
 import re
+import time
 
 
 class SetPrefix(commands.Cog):
@@ -51,6 +52,26 @@ class SetPrefix(commands.Cog):
                 await ctx.send(f"The prefix is limited to a maximum of {self.max_lengte} characters.")
         else:
             await ctx.send("Invalid Arguments.")
+
+    @prefix.error
+    async def prefix_error(self, ctx, error):
+        if isinstance(error, commands.CommandOnCooldown):
+            error_time = error.retry_after
+
+            if error_time >= 3600:
+                error_time_left = time.strftime("%-Hu %-Mm %-Ss", time.gmtime(error_time))
+            elif error_time >= 60:
+                error_time_left = time.strftime("%-Mm %-Ss", time.gmtime(error_time))
+            else:
+                error_time_left = round(error_time, 1)
+
+            embed = discord.Embed(
+                description=f":x: You have to wait {round(error_time_left, 1)} seconds to use this command again.",
+                color=embedcolor
+            )
+            await ctx.send(embed=embed)
+        else:
+            raise error
 
 
 def setup(client):

@@ -1,6 +1,9 @@
 from discord.ext import commands
 import os
 from mutagen.mp3 import MP3
+import time
+from settings import embedcolor
+import discord
 
 
 class SetSound(commands.Cog):
@@ -41,8 +44,8 @@ class SetSound(commands.Cog):
         except Exception:
             pass
 
-        if audio_length > 20:
-            await ctx.send(":x: Your audio file is to long. We currently only allow audio files of maximum 20 seconds.")
+        if audio_length > 25:
+            await ctx.send(":x: Your audio file is too long. We currently only allow audio files of maximum 25 seconds.")
             return
 
         try:
@@ -53,6 +56,26 @@ class SetSound(commands.Cog):
         await ctx.message.attachments[0].save(f"sounds/{ctx.guild.id}.mp3")
 
         await ctx.send(":white_check_mark: Sound succesfully saved.")
+
+    @sound.error
+    async def sound_error(self, ctx, error):
+        if isinstance(error, commands.CommandOnCooldown):
+            error_time = error.retry_after
+
+            if error_time >= 3600:
+                error_time_left = time.strftime("%-Hu %-Mm %-Ss", time.gmtime(error_time))
+            elif error_time >= 60:
+                error_time_left = time.strftime("%-Mm %-Ss", time.gmtime(error_time))
+            else:
+                error_time_left = round(error_time, 1)
+
+            embed = discord.Embed(
+                description=f":x: You have to wait {round(error_time_left, 1)} seconds to use this command again.",
+                color=embedcolor
+            )
+            await ctx.send(embed=embed)
+        else:
+            raise error
 
 
 def setup(client):
