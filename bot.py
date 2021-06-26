@@ -5,6 +5,7 @@ from settings import token, bot_name, prefix
 import asyncio
 from datetime import datetime
 import time
+import random
 
 intents = discord.Intents.default()
 intents.members = True
@@ -18,13 +19,8 @@ async def change_status():
     await client.wait_until_ready()
     print(f"[{bot_name}] All cogs loaded. Ready to use.")
 
-    for guild in client.guilds:
-        voice = discord.utils.get(client.voice_clients, guild=guild)
-        if voice is not None:
-            await voice.disconnect()
-
     while client.is_ready():
-        status = discord.Activity(name="time go by. | $help", type=discord.ActivityType.watching)
+        status = discord.Activity(name=f"time go by. | {prefix}help", type=discord.ActivityType.watching)
         await client.change_presence(activity=status)
         await asyncio.sleep(300)
 
@@ -37,18 +33,19 @@ def check_time():
 
 async def find_channels():
     for guild in client.guilds:
-        counter = 0
+        active_voice_channels = []
         for voice_channel in guild.voice_channels:
-            if counter >= 3:
-                break
-
             if len(voice_channel.members) > 0:
-                await play_sound(guild, voice_channel)
-                counter += 1
+                active_voice_channels.append(voice_channel)
+
+        if len(active_voice_channels) > 0:
+            await play_sound(guild, random.choice(active_voice_channels))
+
+    guilds_playing_audio = client.guilds
 
     while True:
         bot_is_playing_sound = False
-        for guild in client.guilds:
+        for guild in guilds_playing_audio:
             voice = discord.utils.get(client.voice_clients, guild=guild)
 
             if voice is not None:
@@ -56,10 +53,11 @@ async def find_channels():
                     bot_is_playing_sound = True
                 else:
                     await voice.disconnect()
+                    guilds_playing_audio.remove(guild)
 
         if not bot_is_playing_sound:
             break
-        time.sleep(1)
+        time.sleep(3)
 
 
 async def play_sound(guild, voice_channel):
@@ -82,7 +80,7 @@ async def big_ben():
     while client.is_ready():
         if check_time():
             await find_channels()
-            await asyncio.sleep(120)
+            await asyncio.sleep(40)
         await asyncio.sleep(3)
 
 
