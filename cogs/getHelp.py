@@ -19,8 +19,9 @@ class GetHelp(commands.Cog):
         embed.add_field(name="Admin Commands", value="`sound <sound-file>`\nUpload a `.mp3` file and use it as the sound every hour.\n\n__Some restrictions:__\n- Only `.mp3` is supported\n- 25 seconds maximum\n- 512KB Maximum filesize\n\n"
                                                      "`prefix <prefix>`\nChange the prefix of the bot in your server.\n\n"
                                                      "`play-sound`\nPlay the current sound to check if you like it.", inline=False)
-        embed.add_field(name="General Commands", value=f"`help`\nGet the help message.\n"
-                                                       f"\nTo check the prefix use: <@!{self.client.user.id}> prefix", inline=False)
+        embed.add_field(name="General Commands", value=f"`help`\nGet the help message.\n\n"
+                                                       f"`invite`\nGet an invite link to invite the bot.\n\n"
+                                                       f"To check the prefix use: <@!{self.client.user.id}> prefix", inline=False)
         embed.set_footer(text=footer)
         await ctx.send(embed=embed)
 
